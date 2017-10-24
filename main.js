@@ -1,4 +1,4 @@
-var c_database = require('./routes/checkers_database');
+var c_database = require('./checkers_database');
 
 console.log(c_database.get_user_data());
 
