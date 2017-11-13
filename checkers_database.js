@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-let db = new sqlite3.Database('checkers.db', (err) => {
+let db = new sqlite3.Database('./routes/checkers.db', (err) => {
     if (err) {
         return console.error(err.message);
     }
@@ -7,19 +7,19 @@ let db = new sqlite3.Database('checkers.db', (err) => {
 });
 
 function insert_game_row(game_id, board_string, user_id1, user_id2) {
-    db.run("INSERT INTO games VALUES (" + game_id + ", " + board_string + ", " + user_id1 + ", " + user_id2 + ")");
+    db.run("INSERT INTO games VALUES (?, ?, ?, ?)", [game_id, board_string, user_id1, user_id2]);
 }
 
 function insert_user_row(user_id, username, email, passwd) {
-    db.run("INSERT INTO users VALUES (" + user_id + ", '" + username + "', '" + email + "', '" + passwd + "')");
+    db.run("INSERT INTO users VALUES (?, ?, ?, ?)", [user_id, username, email, passwd]);
 }
 
 function insert_game_list_row(game_list_id, user_id1, user_id2, game_id) {
-    db.run("INSERT INTO game_list VALUES (" + game_list_id + ", " + user_id1 + ", " + user_id2 + ", " + game_id + ")");
+    db.run("INSERT INTO game_list VALUES (?, ?, ?, ?)", [game_list_id, user_id1, user_id2, game_id]);
 }
 
 function insert_moves_row(move_id, game_id, date, move_number) {
-    db.run("INSERT INTO moves VALUES (" + move_id + ", " + game_id + ", '" + date + "', " + move_number + ")");
+    db.run("INSERT INTO moves VALUES (?, ?, ?, ?)", [move_id, game_id, date, move_number]);
 }
 
 function display_database() {
@@ -35,24 +35,40 @@ function display_database() {
 
 function display_games() {
     db.each("SELECT * FROM games", function(err, row) {
+        if (err) {
+            return console.error(err.message);
+        }
+        console.log("game_id: " + row.game_id);
+        console.log("board_string: " + row.board_string);
+        console.log("user_id1: " + row.user_id1);
+        console.log("user_id2: " + row.user_id2);
         console.log(row.game_id + " " + row.board_string + " " + row.user_id1 + " " + row.user_id2);
     });
 }
 
 function display_users() {
     db.each("SELECT * FROM users", function(err, row) {
+        if (err) {
+            return console.error(err.message);
+        }
         console.log(row.user_id + " " + row.username + " " + row.email + " " + row.passwd);
     });
 }
 
 function display_game_list() {
     db.each("SELECT * FROM game_list", function(err, row) {
+        if (err) {
+            return console.error(err.message);
+        }
         console.log(row.game_list_id + " " + row.user_id1 + " " + row.user_id2 + " " + row.game_id);
     });
 }
 
 function display_moves() {
     db.each("SELECT * FROM moves", function(err, row) {
+        if (err) {
+            return console.error(err.message);
+        }
         console.log(row.move_id + " " + row.game_id + " " + row.date + " " + row.move_number);
     });
 }
